@@ -1,18 +1,29 @@
 #include <Arduino.h>
+#include "Drivers/MotorDriver.h"
+#include "Drivers/SwitchDriver.h"
+#include "Controllers/MovementController.h"
+#include "Controllers/GameController.h"
+#include "Drivers/Web/WebDriver.h"
+#include "Drivers/ServoDriver.h"
 
-// put function declarations here:
-int myFunction(int, int);
+MotorDriver motors;
+SwitchDriver switches;
+ServoDriver servo;
+MovementController movement(motors, switches);
+GameController game(movement, servo);
+WebDriver web(game);
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+    randomSeed(analogRead(A0));
+
+    servo.begin(PIN_SERVO);
+
+    movement.begin();
+    game.begin();
+    web.begin();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+    web.loop();
+    game.loop();
 }
