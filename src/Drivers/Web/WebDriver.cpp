@@ -41,7 +41,8 @@ void WebDriver::handleState() {
     json += "\"turnMin\":"     + String(_game.getTurnMin()) + ",";
     json += "\"turnMax\":"     + String(_game.getTurnMax()) + ",";
     json += "\"gameMin\":"     + String(_game.getGameMin()) + ",";
-    json += "\"gameMax\":"     + String(_game.getGameMax());
+    json += "\"gameMax\":"     + String(_game.getGameMax()) + ",";
+    json += "\"speed\":"   + String(_game.getSpeed());
 
     json += "}";
 
@@ -60,7 +61,7 @@ void WebDriver::handleStop() {
 
 void WebDriver::handleConfig() {
     if (!_server.hasArg("tMin") || !_server.hasArg("tMax") ||
-        !_server.hasArg("gMin") || !_server.hasArg("gMax"))
+        !_server.hasArg("gMin") || !_server.hasArg("gMax") || !_server.hasArg("speed"))
     {
         _server.send(400, "text/plain", "Missing parameters");
         return;
@@ -70,8 +71,9 @@ void WebDriver::handleConfig() {
     uint16_t tMax = _server.arg("tMax").toInt();
     uint16_t gMin = _server.arg("gMin").toInt();
     uint16_t gMax = _server.arg("gMax").toInt();
+    uint8_t  speed = _server.arg("speed").toInt();
 
-    _game.updateSettings(tMin, tMax, gMin, gMax);
+    _game.updateSettings(tMin, tMax, gMin, gMax, speed);
 
     _server.send(200, "text/plain", "Settings Updated");
 }

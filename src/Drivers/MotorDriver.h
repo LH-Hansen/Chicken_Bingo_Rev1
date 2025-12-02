@@ -10,6 +10,10 @@ public:
         pinMode(PIN_IN3, OUTPUT);
         pinMode(PIN_IN4, OUTPUT);
 
+        pinMode(PIN_MOTOR_EN, OUTPUT);
+        analogWriteRange(255);
+        setSpeed(100);
+
         stopAll();
     }
 
@@ -37,6 +41,14 @@ public:
         motorA(LOW, LOW);
         motorB(LOW, LOW);
     }
+
+    void setSpeed(uint8_t percent) {
+        if (percent > 100) percent = 100;
+
+        uint8_t pwm = map(percent, 0, 100, 0, 255);
+        analogWrite(PIN_MOTOR_EN, pwm);
+    }   
+
 
 
 private:

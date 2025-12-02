@@ -5,12 +5,16 @@ GameController::GameController(MovementController& movement, ServoDriver& servo)
 {}
 
 void GameController::updateSettings(uint16_t tMinMs, uint16_t tMaxMs,
-                                    uint16_t gMinSec, uint16_t gMaxSec)
+                                    uint16_t gMinSec, uint16_t gMaxSec,
+                                    uint8_t speed)
 {
     _turnMinMs = tMinMs;
     _turnMaxMs = tMaxMs;
     _gameMinSec = gMinSec;
     _gameMaxSec = gMaxSec;
+    _speedPercent = speed;
+
+     _movement.getMotorDriver().setSpeed(_speedPercent);
 }
 
 void GameController::startGame() {

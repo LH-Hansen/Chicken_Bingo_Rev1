@@ -13,6 +13,6 @@ private:
     Servo _servo;
     uint8_t _pin = 0;
 
-    uint8_t _openAngle  = 90;
-    uint8_t _closeAngle = 0;
+    uint8_t _openAngle  = 130;
+    uint8_t _closeAngle = 5;
 };
