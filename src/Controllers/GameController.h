@@ -14,7 +14,8 @@ public:
     void stopGame();
 
     void updateSettings(uint16_t tMinMs, uint16_t tMaxMs,
-                        uint16_t gMinSec, uint16_t gMaxSec);
+                        uint16_t gMinSec, uint16_t gMaxSec,
+                        uint8_t speed);
 
     bool isRunning() const { return _running; }
     uint32_t timeLeft() const;
@@ -23,6 +24,7 @@ public:
     uint16_t getTurnMax() const { return _turnMaxMs; }
     uint16_t getGameMin() const { return _gameMinSec; }
     uint16_t getGameMax() const { return _gameMaxSec; }
+    uint8_t getSpeed() const { return _speedPercent; }
 
 private:
     MovementController& _movement;
@@ -36,4 +38,5 @@ private:
     uint16_t _turnMaxMs = 600;
     uint16_t _gameMinSec = 30;
     uint16_t _gameMaxSec = 60;
+     uint8_t _speedPercent = 100;
 };

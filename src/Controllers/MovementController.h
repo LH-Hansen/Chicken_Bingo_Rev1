@@ -15,10 +15,13 @@ public:
         _turnMin = minMs;
         _turnMax = maxMs;
     }
+    
+    MotorDriver& getMotorDriver() { return _motors; } 
 
 private:
     MotorDriver& _motors;
     SwitchDriver& _switches;
+    
 
     enum State {
         DRIVING,
