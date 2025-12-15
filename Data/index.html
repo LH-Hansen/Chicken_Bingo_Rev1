@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chicken Bingo</title>
+<style>
+    body {
+        background: #202020;
+        color: white;
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    h1 { margin-top: 0; }
+
+    button {
+        background: #4f46e5;
+        border: none;
+        padding: 12px 20px;
+        margin: 6px 0;
+        color: white;
+        font-size: 18px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    button.stop {
+        background: #ef4444;
+    }
+
+    .section {
+        margin-top: 20px;
+        padding: 15px;
+        background: #2c2c2c;
+        border-radius: 10px;
+    }
+    label {
+        display: block;
+        margin-top: 10px;
+    }
+    input {
+        width: 120px;
+        padding: 6px;
+        margin-top: 4px;
+        border-radius: 6px;
+        border: none;
+        outline: none;
+    }
+</style>
+</head>
+<body>
+
+<h1>Chicken Bingo</h1>
+
+<div class="section">
+    <p>Status: <span id="status">Loading...</span></p>
+    <p>Time Left: <span id="timeleft">--</span> sec</p>
+
+    <button onclick="startGame()">Start Game</button>
+    <button class="stop" onclick="stopGame()">Stop Game</button>
+</div>
+
+<div class="section">
+    <h2>Settings</h2>
+
+    <label>Turn Min (ms):</label>
+    <input id="tMin" type="number" min="50" max="3000"
+           onfocus="editing=true" onblur="editing=false">
+
+    <label>Turn Max (ms):</label>
+    <input id="tMax" type="number" min="50" max="3000"
+           onfocus="editing=true" onblur="editing=false">
+
+    <label>Game Min (sec):</label>
+    <input id="gMin" type="number" min="5" max="600"
+           onfocus="editing=true" onblur="editing=false">
+
+    <label>Game Max (sec):</label>
+    <input id="gMax" type="number" min="5" max="600"
+           onfocus="editing=true" onblur="editing=false">
+
+    <label>Speed (%):</label>
+    <input id="speed" type="number" min="0" max="100"
+        onfocus="editing=true" onblur="editing=false">
+
+
+    <button onclick="saveConfig()">Save Settings</button>
+</div>
+
+<script>
+let editing = false; 
+
+async function refreshState() {
+    if (editing) return;
+
+    try {
+        const res = await fetch('/state');
+        const data = await res.json();
+
+        document.getElementById('status').textContent =
+            data.running ? 'Running' : 'Stopped';
+
+        document.getElementById('timeleft').textContent = data.timeLeft;
+
+        document.getElementById('tMin').value = data.turnMin;
+        document.getElementById('tMax').value = data.turnMax;
+        document.getElementById('gMin').value = data.gameMin;
+        document.getElementById('gMax').value = data.gameMax;
+        document.getElementById('speed').value = data.speed;
+        
+
+    } catch (e) {
+        document.getElementById('status').textContent = 'Error';
+    }
+}
+
+function startGame() {
+    fetch('/start').then(refreshState);
+}
+
+function stopGame() {
+    fetch('/stop').then(refreshState);
+}
+
+async function saveConfig() {
+    const form = new FormData();
+    form.append("tMin", document.getElementById('tMin').value);
+    form.append("tMax", document.getElementById('tMax').value);
+    form.append("gMin", document.getElementById('gMin').value);
+    form.append("gMax", document.getElementById('gMax').value);
+    form.append("speed", document.getElementById('speed').value);
+
+    const res = await fetch('/config', {
+        method: 'POST',
+        body: form
+    });
+
+    alert(await res.text());
+    refreshState();
+}
+
+setInterval(refreshState, 1000);
+refreshState();
+</script>
+
+</body>
+</html>
